@@ -10,12 +10,11 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="sample">
-           
+        <div class="sample">         
             <form @submit.prevent v-if='showForm'>
                 <label>
                     Name
-                    <input type="text" v-model='name'>
+                    <input type="text" v-model='name'><!-- v-on:keyup="checkInputs" -->
                 </label>
                 <label>
                     Lastname
@@ -30,29 +29,29 @@
                     <input type="text" v-model='phone'>
                 </label>
                 <hr>
-                <!-- <label v-for="(guest, i) in guests">
-                   {{}}
-        
-                   <input type="text" v-model='phone'>
-               </label> -->
                 <button class="btn btn-primary" @click="addGuest">Add Guest</button>
+                <br>
+                <label v-for="(guest, i) in guests" v-on:dblclick="deleteGuest(i)">
+                    Guest {{i +1}}
+          
+                     <input type="text" v-model="guests[i]">
+                 </label>
                 <hr>
-                <button type="button" class="btn btn-success" @click="handeleSubmit">Send</button>
+                <button type="button" class="btn btn-success" @click="handleSubmit" v-bind:disabled="!checkInputs">Send</button>
             </form>
-            <hr>
-            <div class="result" v-else="!showForm">
+            <div class="result" v-else>
                 <ul>
-                    <li>{{fullName}}</li>
-                    <li>{{email}}</li>
-                    <li>{{phone}}</li>
-                    <li></li>
+                    <li>FullName: {{fullName}}</li>
+                    <li>Email: {{email}}</li>
+                    <li>Phone: {{phone}}</li>
+                    <ol>
+                        <li v-for="(guest, i) in guests">{{guest}}</li>
+                    </ol>
 
                 </ul>
             </div>
         </div>
     </div>
-
-
 
     <script src="https://unpkg.com/vue@next"></script>
 <script> 
@@ -62,30 +61,39 @@
             lastName: '',
             email: '',
             phone: '',
-            giest: [],
+            guests: [],
             showForm: true,
+            // sendDisabled: true
         }),
         methods:{
-            handeleSubmit(){
-                console.log('this.name')
+            handleSubmit(){
+                this.checkForm();
+                this.showForm = false
+                // console.log('this.name')
             },
             addGuest(){
-                this.guest.push('')
-                console.log(this.guests)
+                this.guests.push('')
+                // console.log(this.guests)
+            },
+            deleteGuest(index){
+                this.guests.splice(index, 1)
+            },
+            checkForm(){
+               this.guests = this.guests.filter((item) => {
+                    return item !==''
+                })              
             }
         },
         computed:{
             fullName(){
                 return this.name + '' + this.lastName
+            },
+            checkInputs(){
+               return this.name !=='' && this.lastName !=='' && this.email !=='' && this.phone !=='' 
             }
-
-
         }
     });
-    app.mount('sample');
-
-
-
+    app.mount('.sample');
 </script>
 </body>
 </html>
